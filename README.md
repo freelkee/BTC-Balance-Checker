@@ -1,0 +1,1 @@
+This REST API can output information to the user about the balance on his BTC wallet, you only need to send a get request to the address /balance/{address}. If the user needs to get a balance in a currency, send a get request to the address /balance/{currency}/{address}.
