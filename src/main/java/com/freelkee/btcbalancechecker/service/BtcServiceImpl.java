@@ -4,6 +4,9 @@ package com.freelkee.btcbalancechecker.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freelkee.btcbalancechecker.model.BlockchainInfoResponse;
 import com.freelkee.btcbalancechecker.model.TickerResponse;
+import com.freelkee.btcbalancechecker.model.Transaction;
+import com.freelkee.btcbalancechecker.repository.TransactionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -12,7 +15,8 @@ import java.net.URL;
 
 @Service
 public class BtcServiceImpl implements BtcService {
-
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     @Override
     public double getBalance(String address) throws IOException {
@@ -27,9 +31,7 @@ public class BtcServiceImpl implements BtcService {
 
         if (diff >= 0) {
             stringBuilder.append("0.");
-            for (int i = 0; i < diff; i++) {
-                stringBuilder.append("0");
-            }
+            stringBuilder.append("0".repeat(diff));
             stringBuilder.append(balanceStr);
         } else {
             stringBuilder.append(balanceStr, 0, -diff).append(".").append(balanceStr, -diff, balanceStr.length());
@@ -51,5 +53,10 @@ public class BtcServiceImpl implements BtcService {
         String url = "https://www.blockchain.com/ru/ticker";
         TickerResponse response = objectMapper.readValue(new URL(url), TickerResponse.class);
         return getTickerValue(response,currency) * getBalance(address);
+    }
+
+    @Override
+    public void saveTransaction(Transaction transaction) {
+        transactionRepository.save(transaction);
     }
 }
