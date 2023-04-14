@@ -1,7 +1,5 @@
 package com.freelkee.btcbalancechecker.service;
 
-
-
 import com.freelkee.btcbalancechecker.model.TickerResponse;
 import com.freelkee.btcbalancechecker.model.Transaction;
 
@@ -16,4 +14,6 @@ public interface BtcService {
     double getBtcBalanceInCurrency(String address, String currency) throws IOException, NoSuchFieldException, IllegalAccessException;
 
     void saveTransaction(Transaction transaction);
+
+    Transaction getTransaction(String currency, String bitcoinAddress) throws IOException;
 }

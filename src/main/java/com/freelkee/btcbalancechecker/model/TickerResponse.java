@@ -78,7 +78,6 @@ public class TickerResponse {
     public static class Currency {
         @JsonProperty("15m")
         private String m15;
-
         private String last;
         private String buy;
         private String sell;

@@ -1,12 +1,12 @@
 package com.freelkee.btcbalancechecker.model;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,6 +21,7 @@ public class BlockchainInfoResponse {
     private long total_sent;
     private long final_balance;
 
+    //the implementation of the transaction list will be in the future
     private List txs;
 
 }

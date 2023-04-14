@@ -52,11 +52,21 @@ public class BtcServiceImpl implements BtcService {
         ObjectMapper objectMapper = new ObjectMapper();
         String url = "https://www.blockchain.com/ru/ticker";
         TickerResponse response = objectMapper.readValue(new URL(url), TickerResponse.class);
-        return getTickerValue(response,currency) * getBalance(address);
+        double roundScale = Math.pow(10, 2);
+        return Math.ceil(getTickerValue(response, currency) * getBalance(address) * roundScale) / roundScale;
     }
 
     @Override
     public void saveTransaction(Transaction transaction) {
         transactionRepository.save(transaction);
+    }
+
+    @Override
+    public Transaction getTransaction(String currency, String bitcoinAddress) throws IOException {
+        String mainUrl = "http://localhost:8080/balance/";
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(currency.equals("") ?
+                new URL(mainUrl + bitcoinAddress) :
+                new URL(mainUrl  + currency + "/" + bitcoinAddress), Transaction.class);
     }
 }

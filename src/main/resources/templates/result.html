@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Result Page</title>
+</head>
+<body>
+<div th:replace="~{header.html}"></div>
+<h1>Transaction Details:</h1>
+<p><strong>Time:</strong> <span th:text="${transaction.getDate()}"></span></p>
+<p><strong>Bitcoin Address:</strong> <span th:text="${transaction.getAddress()}"></span></p>
+<p><strong>Amount:</strong> <span th:text="${transaction.getAmount()}"></span></p>
+<p><strong>Currency:</strong> <span th:text="${transaction.getCurrency()}"></span></p>
+<p><strong>Amount in currency:</strong> <span th:text="${transaction.getAmountInCurrency()}"></span></p>
+<p><strong>Note:</strong> <span th:text="${transaction.getNote()}"></span></p>
+
+</body>
+</html>

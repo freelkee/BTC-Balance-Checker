@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>BTC Balance Checker</title>
+</head>
+<body>
+<div th:replace="~{header.html}"></div>
+<h1>Select currency and enter bitcoin address</h1>
+<form action="/process" method="post">
+  <label>Currency:</label>
+  <select name="currency">
+    <option value=>None</option>
+    <option value="USD">US Dollar</option>        <option value="EUR">Euro</option>            <option value="RUB">Russian Ruble</option>
+    <option value="ARS">Argentine Peso</option>   <option value="AUD">Australian Dollar</option><option value="BRL">Brazilian Real</option>
+    <option value="CAD">Canadian Dollar</option>  <option value="CHF">Swiss Franc</option>      <option value="CLP">Chilean Peso</option>
+    <option value="CNY">Chinese Yuan</option>     <option value="CZK">Czech Koruna</option>     <option value="DKK">Danish Krone</option>
+    <option value="GBP">British Pound</option>    <option value="HKD">Hong Kong Dollar</option> <option value="HRK">Croatian Kuna</option>
+    <option value="HUF">Hungarian Forint</option> <option value="INR">Indian Rupee</option>     <option value="ISK">Icelandic Króna</option>
+    <option value="JPY">Japanese Yen</option>     <option value="KRW">South Korean Won</option> <option value="NZD">New Zealand Dollar</option>
+    <option value="PLN">Polish Zloty</option>     <option value="RON">Romanian Leu</option>     <option value="SEK">Swedish Krona</option>
+    <option value="SGD">Singapore Dollar</option> <option value="THB">Thai Baht</option>        <option value="TRY">Turkish Lira</option>
+    <option value="TWD">New Taiwan Dollar</option>
+  </select>
+  <br/><br/>
+  <label>Bitcoin address:</label>
+  <input type="text" name="bitcoinAddress"/>
+  <br/><br/>
+  <input type="submit" value="Submit"/>
+</form>
+</body>
+</html>
