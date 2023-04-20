@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,7 +20,6 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
-
 
     @Column(name = "date")
     private Timestamp date;
@@ -36,8 +36,10 @@ public class Transaction {
     @Column(name = "amount_in_currency")
     private double amountInCurrency;
 
-    @Column(name = "note")
-    private String note;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name ="fk_transaction")
+    public List<Tx> txs;
+
 
     @PrePersist
     public void setCreatedAt() {
