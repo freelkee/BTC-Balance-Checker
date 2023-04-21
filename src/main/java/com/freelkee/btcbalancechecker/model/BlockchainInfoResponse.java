@@ -43,6 +43,7 @@ public class BlockchainInfoResponse {
         private long fee;
         private String relayed_by;
         private long lock_time;
+        private long tx_index;
         private long time;
         private long block_height;
         private Input[] inputs;

@@ -1,15 +1,19 @@
 package com.freelkee.btcbalancechecker.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freelkee.btcbalancechecker.model.BlockchainInfoResponse;
-import com.freelkee.btcbalancechecker.model.Transaction;
+import com.freelkee.btcbalancechecker.model.TickerResponse;
+import com.freelkee.btcbalancechecker.model.Wallet;
 import com.freelkee.btcbalancechecker.model.Tx;
 import com.freelkee.btcbalancechecker.service.BtcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,46 +27,49 @@ public class MyRESTController {
     private BtcService btcService;
 
     @GetMapping("/balance/{address}")
-    public Transaction showWalletInfo(@PathVariable String address) throws IOException {
-        Transaction transaction = new Transaction();
-        BlockchainInfoResponse blockchainInfoResponse = btcService.getResponse(address);
-        transaction.setAddress(address);
-        transaction.setAmount(blockchainInfoResponse.getFinalBalance() * 0.00000001d);
-        List<Tx> txs = new ArrayList<>();
-        List<BlockchainResponseTx> oldTxs = blockchainInfoResponse.getTxs();
-        for (BlockchainResponseTx oldTx : oldTxs) {
-            Tx newTxs = new Tx();
-            newTxs.setAmount(oldTx.getResult() * 0.00000001);
-            newTxs.setDate(new Timestamp(oldTx.getTime() * 1000));
-            txs.add(newTxs);
-        }
-        transaction.setTxs(txs);
-        btcService.saveTransaction(transaction);
-        return transaction;
+    public Wallet showWalletInfo(@PathVariable String address,
+                                 @RequestParam(value = "offset", defaultValue = "0") int offset) throws IOException, NoSuchFieldException, IllegalAccessException {
+        return getTransaction(address, null, offset);
     }
 
     @GetMapping("/balance/{currency}/{address}")
-    public Transaction showBtcBalanceInCurrency(@PathVariable String address, @PathVariable String currency) throws IOException, NoSuchFieldException, IllegalAccessException {
-        Transaction transaction = new Transaction();
-        BlockchainInfoResponse blockchainInfoResponse = btcService.getResponse(address);
-        transaction.setAddress(address);
-        transaction.setAmount(((double) blockchainInfoResponse.getFinalBalance()) * 0.00000001);
+    public Wallet showBtcBalanceInCurrency(@PathVariable String address, @PathVariable String currency,
+                                           @RequestParam(value = "offset", defaultValue = "0") int offset) throws IOException, NoSuchFieldException, IllegalAccessException {
+        return getTransaction(address, currency, offset);
+
+    }
+
+    private Wallet getTransaction(String address, String currency, int offset) throws IOException, NoSuchFieldException, IllegalAccessException {
+        Wallet wallet = new Wallet();
+        BlockchainInfoResponse blockchainInfoResponse = btcService.getResponse(address, offset);
+
+        wallet.setAddress(address);
+        wallet.setAmount(blockchainInfoResponse.getFinalBalance() * 0.00000001);
+        wallet.setDate(new Timestamp(System.currentTimeMillis()));
+
         List<Tx> txs = new ArrayList<>();
-        List<BlockchainResponseTx> oldTxs = blockchainInfoResponse.getTxs();
-        for (BlockchainResponseTx oldTx : oldTxs) {
+        for (BlockchainResponseTx oldTx : blockchainInfoResponse.getTxs()) {
             Tx newTxs = new Tx();
+            newTxs.setId(oldTx.getTx_index());
             newTxs.setAmount(oldTx.getResult() * 0.00000001);
             newTxs.setDate(new Timestamp(oldTx.getTime() * 1000));
             txs.add(newTxs);
         }
-        transaction.setTxs(txs);
+        wallet.setTxs(txs);
 
-        double balanceInCurrency = btcService.getBtcBalanceInCurrency(address, currency);
-        transaction.setCurrency(currency);
-        transaction.setAmountInCurrency(balanceInCurrency);
+        if (currency != null) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String url = "https://www.blockchain.com/ru/ticker";
+            TickerResponse response = objectMapper.readValue(new URL(url), TickerResponse.class);
+            double roundScale = Math.pow(10, 2);
+            double balanceInCurrency = Math.ceil(btcService.getTickerValue(response, currency) *
+                    blockchainInfoResponse.getFinalBalance() * roundScale) / roundScale;
 
-        btcService.saveTransaction(transaction);
-        return transaction;
+            wallet.setCurrency(currency);
+            wallet.setAmountInCurrency(balanceInCurrency);
+        }
 
+        btcService.saveWallet(wallet);
+        return wallet;
     }
 }

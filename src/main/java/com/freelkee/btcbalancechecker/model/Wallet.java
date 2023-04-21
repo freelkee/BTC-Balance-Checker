@@ -14,32 +14,28 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "transactions")
-public class Transaction {
+@Table(name = "wallet")
+public class Wallet {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
+    @Column(name = "address")
+    private String address;
 
     @Column(name = "date")
     private Timestamp date;
 
-    @Column(name = "wallet_address")
-    private String address;
+    @Column(name = "amount")
+    private double amount;
 
     @Column(name = "currency")
     private String currency;
-
-    @Column(name = "amount")
-    private double amount;
 
     @Column(name = "amount_in_currency")
     private double amountInCurrency;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name ="fk_transaction")
+    @JoinColumn(name ="fk_wallet")
     public List<Tx> txs;
-
 
     @PrePersist
     public void setCreatedAt() {

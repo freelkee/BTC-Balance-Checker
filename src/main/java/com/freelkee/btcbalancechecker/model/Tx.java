@@ -16,9 +16,8 @@ import java.sql.Timestamp;
 @Table(name = "txs")
 public class Tx {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private long id;
 
     @Column(name = "date")
     private Timestamp date;
