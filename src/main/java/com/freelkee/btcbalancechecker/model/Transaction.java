@@ -13,11 +13,11 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "txs")
-public class Tx {
+@Table(name = "transaction")
+public class Transaction {
     @Id
-    @Column(name = "id")
-    private long id;
+    @Column(name = "address")
+    private String address;
 
     @Column(name = "date")
     private Timestamp date;
@@ -25,4 +25,10 @@ public class Tx {
     @Column(name = "amount")
     private double amount;
 
+    @PrePersist
+    public void setCreatedAt() {
+        this.date = new Timestamp(System.currentTimeMillis());
+    }
+
 }
+

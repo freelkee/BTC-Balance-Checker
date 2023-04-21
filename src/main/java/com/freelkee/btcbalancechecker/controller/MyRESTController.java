@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freelkee.btcbalancechecker.model.BlockchainInfoResponse;
 import com.freelkee.btcbalancechecker.model.TickerResponse;
 import com.freelkee.btcbalancechecker.model.Wallet;
-import com.freelkee.btcbalancechecker.model.Tx;
+import com.freelkee.btcbalancechecker.model.Wallet.Tx;
 import com.freelkee.btcbalancechecker.service.BtcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,7 +44,8 @@ public class MyRESTController {
         BlockchainInfoResponse blockchainInfoResponse = btcService.getResponse(address, offset);
 
         wallet.setAddress(address);
-        wallet.setAmount(blockchainInfoResponse.getFinalBalance() * 0.00000001);
+        double amount = blockchainInfoResponse.getFinalBalance() * 0.00000001;
+        wallet.setAmount(amount);
         wallet.setDate(new Timestamp(System.currentTimeMillis()));
 
         List<Tx> txs = new ArrayList<>();
@@ -63,13 +64,13 @@ public class MyRESTController {
             TickerResponse response = objectMapper.readValue(new URL(url), TickerResponse.class);
             double roundScale = Math.pow(10, 2);
             double balanceInCurrency = Math.ceil(btcService.getTickerValue(response, currency) *
-                    blockchainInfoResponse.getFinalBalance() * roundScale) / roundScale;
+                    amount * roundScale) / roundScale;
 
             wallet.setCurrency(currency);
             wallet.setAmountInCurrency(balanceInCurrency);
         }
 
-        btcService.saveWallet(wallet);
+        btcService.saveTransaction(wallet);
         return wallet;
     }
 }

@@ -12,7 +12,7 @@ public interface BtcService {
 
     double getTickerValue(TickerResponse ticker, String currency) throws NoSuchFieldException, IllegalAccessException;
 
-    void saveWallet(Wallet wallet);
+    void saveTransaction(Wallet wallet);
 
     Wallet getWallet(String currency, String bitcoinAddress) throws IOException;
 }
