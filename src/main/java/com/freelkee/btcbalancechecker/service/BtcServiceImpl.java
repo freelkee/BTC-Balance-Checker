@@ -2,10 +2,11 @@ package com.freelkee.btcbalancechecker.service;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.freelkee.btcbalancechecker.entity.Transaction;
 import com.freelkee.btcbalancechecker.model.BlockchainInfoResponse;
 import com.freelkee.btcbalancechecker.model.TickerResponse;
-import com.freelkee.btcbalancechecker.model.Transaction;
-import com.freelkee.btcbalancechecker.repository.TransactionRepository;
+import com.freelkee.btcbalancechecker.model.Wallet;
+import com.freelkee.btcbalancechecker.repository.TransactionalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,28 +17,14 @@ import java.net.URL;
 @Service
 public class BtcServiceImpl implements BtcService {
     @Autowired
-    private TransactionRepository transactionRepository;
+    private TransactionalRepository transactionalRepository;
 
     @Override
-    public double getBalance(String address) throws IOException {
-        String url = "https://blockchain.info/rawaddr/" + address;
-        ObjectMapper objectMapper = new ObjectMapper();
-        BlockchainInfoResponse response = objectMapper.readValue(new URL(url), BlockchainInfoResponse.class);
-        String balanceStr = String.valueOf(response.getFinal_balance());
-
-        int diff = 8 - balanceStr.length();
-
-        StringBuilder stringBuilder = new StringBuilder();
-
-        if (diff >= 0) {
-            stringBuilder.append("0.");
-            stringBuilder.append("0".repeat(diff));
-            stringBuilder.append(balanceStr);
-        } else {
-            stringBuilder.append(balanceStr, 0, -diff).append(".").append(balanceStr, -diff, balanceStr.length());
-        }
-        return Double.parseDouble(stringBuilder.toString());
+    public BlockchainInfoResponse getResponse(String address, int offset) throws IOException {
+        String url = "https://blockchain.info/rawaddr/" + address + "?offset=" + offset;
+        return new ObjectMapper().readValue(new URL(url), BlockchainInfoResponse.class);
     }
+
 
     @Override
     public double getTickerValue(TickerResponse ticker, String currency) throws NoSuchFieldException, IllegalAccessException {
@@ -47,26 +34,23 @@ public class BtcServiceImpl implements BtcService {
         return Double.parseDouble(currencyValue.getLast());
     }
 
-    @Override
-    public double getBtcBalanceInCurrency(String address, String currency) throws IOException, NoSuchFieldException, IllegalAccessException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        String url = "https://www.blockchain.com/ru/ticker";
-        TickerResponse response = objectMapper.readValue(new URL(url), TickerResponse.class);
-        double roundScale = Math.pow(10, 2);
-        return Math.ceil(getTickerValue(response, currency) * getBalance(address) * roundScale) / roundScale;
+
+    public void saveTransaction(Wallet wallet) {
+        Transaction existingTransaction = transactionalRepository.findByAddress(wallet.getAddress()).orElse(null);
+        if (existingTransaction == null) {
+            existingTransaction = new Transaction();
+            existingTransaction.setAmount(wallet.getAmount());
+            existingTransaction.setAddress(wallet.getAddress());
+            transactionalRepository.save(existingTransaction);
+        }
     }
 
     @Override
-    public void saveTransaction(Transaction transaction) {
-        transactionRepository.save(transaction);
-    }
-
-    @Override
-    public Transaction getTransaction(String currency, String bitcoinAddress) throws IOException {
+    public Wallet getWallet(String currency, String bitcoinAddress, int offset) throws IOException {
         String mainUrl = "http://localhost:8080/balance/";
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(currency.equals("") ?
-                new URL(mainUrl + bitcoinAddress) :
-                new URL(mainUrl  + currency + "/" + bitcoinAddress), Transaction.class);
+                new URL(mainUrl + bitcoinAddress + "?offset=" + offset) :
+                new URL(mainUrl + currency + "/" + bitcoinAddress + "?offset=" + offset), Wallet.class);
     }
 }

@@ -1,4 +1,4 @@
-package com.freelkee.btcbalancechecker.model;
+package com.freelkee.btcbalancechecker.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,31 +13,17 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "transactions")
+@Table(name = "transaction")
 public class Transaction {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
-
+    @Column(name = "address")
+    private String address;
 
     @Column(name = "date")
     private Timestamp date;
 
-    @Column(name = "wallet_address")
-    private String address;
-
-    @Column(name = "currency")
-    private String currency;
-
     @Column(name = "amount")
     private double amount;
-
-    @Column(name = "amount_in_currency")
-    private double amountInCurrency;
-
-    @Column(name = "note")
-    private String note;
 
     @PrePersist
     public void setCreatedAt() {
@@ -45,3 +31,4 @@ public class Transaction {
     }
 
 }
+

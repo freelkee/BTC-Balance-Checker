@@ -1,6 +1,6 @@
-package com.freelkee.btcbalancechecker.controller;
+package com.freelkee.btcbalancechecker.controllers;
 
-import com.freelkee.btcbalancechecker.model.Transaction;
+import com.freelkee.btcbalancechecker.model.Wallet;
 import com.freelkee.btcbalancechecker.service.BtcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,10 +24,12 @@ public class MyController {
     @PostMapping("/process")
     public String processForm(@RequestParam("currency") String currency,
                               @RequestParam("bitcoinAddress") String bitcoinAddress,
+                              @RequestParam("offset") int offset,
                               Model model) throws IOException {
 
-        Transaction transaction = btcService.getTransaction(currency, bitcoinAddress);
-        model.addAttribute("transaction", transaction);
+        Wallet wallet = btcService.getWallet(currency, bitcoinAddress, offset);
+        model.addAttribute("wallet", wallet);
+        model.addAttribute("offset", offset);
         return "result";
     }
 
