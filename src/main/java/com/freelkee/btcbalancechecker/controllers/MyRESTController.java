@@ -1,4 +1,4 @@
-package com.freelkee.btcbalancechecker.controller;
+package com.freelkee.btcbalancechecker.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freelkee.btcbalancechecker.model.BlockchainInfoResponse;

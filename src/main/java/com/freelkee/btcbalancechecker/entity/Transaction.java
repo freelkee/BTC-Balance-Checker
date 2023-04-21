@@ -1,4 +1,4 @@
-package com.freelkee.btcbalancechecker.model;
+package com.freelkee.btcbalancechecker.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

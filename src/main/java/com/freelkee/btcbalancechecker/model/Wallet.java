@@ -32,5 +32,6 @@ public class Wallet {
         private long id;
         private Timestamp date;
         private double amount;
+
     }
 }

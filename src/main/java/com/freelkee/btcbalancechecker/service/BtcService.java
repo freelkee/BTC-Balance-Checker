@@ -14,5 +14,5 @@ public interface BtcService {
 
     void saveTransaction(Wallet wallet);
 
-    Wallet getWallet(String currency, String bitcoinAddress) throws IOException;
+    Wallet getWallet(String currency, String bitcoinAddress,int offset) throws IOException;
 }

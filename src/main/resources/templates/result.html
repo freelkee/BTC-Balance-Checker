@@ -5,6 +5,7 @@
   <title>Result Page</title>
 </head>
 <body>
+
 <div th:replace="~{header.html}"></div>
 <h1>Transaction Details:</h1>
 <p><strong>Time:</strong> <span th:text="${wallet.getDate()}"></span></p>
@@ -12,7 +13,25 @@
 <p><strong>Amount:</strong> <span th:text="${wallet.getAmount()}"></span></p>
 <p><strong>Currency:</strong> <span th:text="${wallet.getCurrency()}"></span></p>
 <p><strong>Amount in currency:</strong> <span th:text="${wallet.getAmountInCurrency()}"></span></p>
-<p><strong>Note:</strong> <span th:text="${wallet.getNote()}"></span></p>
+
+<h2>List of transactions:</h2>
+<p><strong>Offset:</strong> <span th:text="${offset}"></span></p>
+<table style="border-collapse: collapse; width: 100%;">
+  <thead>
+  <tr style="background-color: #dddddd;">
+    <th style="border: 1px solid #dddddd; padding: 8px; text-align: left;">Id</th>
+    <th style="border: 1px solid #dddddd; padding: 8px; text-align: left;">Date</th>
+    <th style="border: 1px solid #dddddd; padding: 8px; text-align: left;">Amount</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="tx : ${wallet.getTxs()}" style="border: 1px solid #dddddd;">
+    <td style="border: 1px solid #dddddd; padding: 8px;"> <span th:text="${tx.getId()}"></span></td>
+    <td style="border: 1px solid #dddddd; padding: 8px;"> <span th:text="${tx.getDate()}"></span></td>
+    <td style="border: 1px solid #dddddd; padding: 8px;"> <span th:text="${tx.getAmount()}"></span></td>
+  </tr>
+  </tbody>
+</table>
 
 </body>
 </html>

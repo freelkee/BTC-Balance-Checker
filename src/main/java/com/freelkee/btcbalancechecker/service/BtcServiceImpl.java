@@ -2,9 +2,9 @@ package com.freelkee.btcbalancechecker.service;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.freelkee.btcbalancechecker.entity.Transaction;
 import com.freelkee.btcbalancechecker.model.BlockchainInfoResponse;
 import com.freelkee.btcbalancechecker.model.TickerResponse;
-import com.freelkee.btcbalancechecker.model.Transaction;
 import com.freelkee.btcbalancechecker.model.Wallet;
 import com.freelkee.btcbalancechecker.repository.TransactionalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,6 @@ public class BtcServiceImpl implements BtcService {
     }
 
 
-
     public void saveTransaction(Wallet wallet) {
         Transaction existingTransaction = transactionalRepository.findByAddress(wallet.getAddress()).orElse(null);
         if (existingTransaction == null) {
@@ -47,11 +46,11 @@ public class BtcServiceImpl implements BtcService {
     }
 
     @Override
-    public Wallet getWallet(String currency, String bitcoinAddress) throws IOException {
+    public Wallet getWallet(String currency, String bitcoinAddress, int offset) throws IOException {
         String mainUrl = "http://localhost:8080/balance/";
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(currency.equals("") ?
-                new URL(mainUrl + bitcoinAddress) :
-                new URL(mainUrl + currency + "/" + bitcoinAddress), Wallet.class);
+                new URL(mainUrl + bitcoinAddress + "?offset=" + offset) :
+                new URL(mainUrl + currency + "/" + bitcoinAddress + "?offset=" + offset), Wallet.class);
     }
 }

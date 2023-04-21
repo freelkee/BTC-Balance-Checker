@@ -1,4 +1,4 @@
-package com.freelkee.btcbalancechecker.controller;
+package com.freelkee.btcbalancechecker.controllers;
 
 import com.freelkee.btcbalancechecker.model.Wallet;
 import com.freelkee.btcbalancechecker.service.BtcService;
@@ -24,10 +24,12 @@ public class MyController {
     @PostMapping("/process")
     public String processForm(@RequestParam("currency") String currency,
                               @RequestParam("bitcoinAddress") String bitcoinAddress,
+                              @RequestParam("offset") int offset,
                               Model model) throws IOException {
 
-        Wallet wallet = btcService.getWallet(currency, bitcoinAddress);
-        model.addAttribute("transaction", wallet);
+        Wallet wallet = btcService.getWallet(currency, bitcoinAddress, offset);
+        model.addAttribute("wallet", wallet);
+        model.addAttribute("offset", offset);
         return "result";
     }
 
