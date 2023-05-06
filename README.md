@@ -1,5 +1,3 @@
-Sure, here's the text in markdown format:
-
 # BTC Balance Checker
 
 BTC Balance Checker is a web application that allows users to check the balance of their Bitcoin wallet addresses. The application retrieves the balance of the Bitcoin wallet address by querying the blockchain using a third-party API.
