@@ -6,11 +6,10 @@ import com.freelkee.btcbalancechecker.model.TickerResponse;
 import com.freelkee.btcbalancechecker.model.Wallet;
 import com.freelkee.btcbalancechecker.model.Wallet.Tx;
 import com.freelkee.btcbalancechecker.service.BtcService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -21,22 +20,25 @@ import java.util.List;
 import static com.freelkee.btcbalancechecker.model.BlockchainInfoResponse.BlockchainResponseTx;
 
 @RestController    //контроллер, управляющий рест запросами и ответами
+@RequestMapping("/api")
+@Api(description = "Controller for BTC wallet balance")
 public class MyRESTController {
 
     @Autowired
     private BtcService btcService;
 
     @GetMapping("/balance/{address}")
+    @ApiOperation("Show wallet info")
     public Wallet showWalletInfo(@PathVariable String address,
                                  @RequestParam(value = "offset", defaultValue = "0") int offset) throws IOException, NoSuchFieldException, IllegalAccessException {
         return getTransaction(address, null, offset);
     }
 
     @GetMapping("/balance/{currency}/{address}")
+    @ApiOperation("Show wallet info in Currency")
     public Wallet showBtcBalanceInCurrency(@PathVariable String address, @PathVariable String currency,
                                            @RequestParam(value = "offset", defaultValue = "0") int offset) throws IOException, NoSuchFieldException, IllegalAccessException {
         return getTransaction(address, currency, offset);
-
     }
 
     private Wallet getTransaction(String address, String currency, int offset) throws IOException, NoSuchFieldException, IllegalAccessException {

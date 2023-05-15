@@ -47,7 +47,7 @@ public class BtcServiceImpl implements BtcService {
 
     @Override
     public Wallet getWallet(String currency, String bitcoinAddress, int offset) throws IOException {
-        String mainUrl = "http://localhost:8080/balance/";
+        String mainUrl = "http://localhost:8080/api/balance/";
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(currency.equals("") ?
                 new URL(mainUrl + bitcoinAddress + "?offset=" + offset) :

@@ -13,8 +13,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
-@Table(name = "wallet")
 public class Wallet {
     private String address;
     private Timestamp date;
