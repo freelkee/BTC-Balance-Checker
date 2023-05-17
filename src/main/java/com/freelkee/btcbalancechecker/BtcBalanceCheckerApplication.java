@@ -8,4 +8,5 @@ public class BtcBalanceCheckerApplication {
     public static void main(String[] args) {
         SpringApplication.run(BtcBalanceCheckerApplication.class, args);
     }
+
 }

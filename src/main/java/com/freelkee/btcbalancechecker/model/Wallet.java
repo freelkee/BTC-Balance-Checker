@@ -1,5 +1,6 @@
 package com.freelkee.btcbalancechecker.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,9 +14,9 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
-@Table(name = "wallet")
+@Schema(description = "Wallet")
 public class Wallet {
+    @Schema(description = "BTC address")
     private String address;
     private Timestamp date;
     private double amount;
